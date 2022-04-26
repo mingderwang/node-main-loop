@@ -1,7 +1,7 @@
 {
   "name": "node-main-loop",
-  "version": "0.0.1",
-  "main": "main.js",
+  "version": "0.0.2",
+  "main": "p2p.js",
   "author": "Ming-der Wang",
   "license": "MIT",
   "dependencies": {
@@ -14,7 +14,7 @@
     "tsc": "^2.0.4"
   },
   "scripts": {
-    "start": "node main.js",
+    "start": "node p2p.js",
     "test": "node https.js",
     "req": "node req.js"
   },

@@ -36,67 +36,6 @@ async function main() {
     sync: true,
   });
   console.log("key account:🎒", sdk.state.account);
-  /*
-notification:🌈 AnyNotification {
-  type: 'AccountMemberCreated',
-  recipient: '0x452f9F4d5BEaB3A9C8Fe5a515C2C1937274A0Cf9',
-  payload: {
-    account: '0x452f9F4d5BEaB3A9C8Fe5a515C2C1937274A0Cf9',
-    member: '0xFD8d1910D7D708BF465F6E365F91A2Bfdb3949AC'
-  }
-}
-*/
-  await sdk.syncAccount();
-  console.log("synced contract account member", sdk.state.accountMember);
-  /*
-synced contract account member {
-  type: 'Owner',
-  state: 'Added',
-  store: 'PersonalAccountRegistry',
-  createdAt: 2022-04-26T06:37:00.676Z,
-  updatedAt: 2022-04-26T06:37:00.676Z,
-  synchronizedAt: 2022-04-26T06:37:01.432Z
-}
-*/
-  console.log(
-    "get account",
-    await sdk.getAccount({
-      address: sdk.state.accountAddress,
-    })
-  );
-  /*
-  get account Account {
-  ensNode: null,
-  address: '0x452f9F4d5BEaB3A9C8Fe5a515C2C1937274A0Cf9',
-  type: 'Contract',
-  state: 'UnDeployed',
-  store: 'PersonalAccountRegistry',
-  createdAt: 2022-04-26T06:37:00.651Z,
-  updatedAt: 2022-04-26T06:37:00.651Z
-}
-*/
-  console.log(
-    "get account members",
-    await sdk.getAccountMembers({
-      account: sdk.state.accountAddress,
-    })
-  );
-  /*
-get account members AccountMembers {
-  items: [
-    AccountMember {
-      member: [Account],
-      type: 'Owner',
-      state: 'Added',
-      store: 'PersonalAccountRegistry',
-      createdAt: 2022-04-26T06:37:00.676Z,
-      updatedAt: 2022-04-26T06:37:00.676Z
-    }
-  ],
-  currentPage: 1,
-  nextPage: null
-}
-*/
   // both need funding otherwise will reverted ********🍎🍎🍎🍎🍎🍎
   // p2pPaymentDepositAddress:🍎 0x92fa3E98958aFDf230C5a5795B62E950439d7f78
   // same contract account:🔥 0xEDb6fb28ae0eD17A3adc3283733391063e8D9fb6
@@ -104,29 +43,35 @@ get account members AccountMembers {
     "p2pPaymentDepositAddress:🍎",
     sdk.state.state$._value.p2pPaymentDepositAddress
   );
+  console.log("same contract account:🔥", sdk.state.account.address);
 
   // step 0 - clear batch
   await sdk.clearGatewayBatch();
 
-  console.log("same contract account:🔥", sdk.state.account.address);
-
-  // top-up contract account (sdk.account.address)
   // step 0.1 - fundings contract address otherwise, tx will be reverted
   // only no Etherspot network
   if (KEY_NETWORK === NetworkNames.Etherspot) {
-    const hash = await sdk
+    await sdk
       .topUpAccount()
-      .then(console.log)
-      .catch(console.error); // funding to new account
-    console.log("funding - hash:🦊", hash);
-    const hash2 = await sdk
+      .then((hash) => {
+        console.log("funding - hash:🦊", hash);
+      })
+      .catch("🔥", console.error); // funding to new account
+    await sdk
       .topUpPaymentDepositAccount()
-      .then(console.log)
-      .catch(console.error); // funding to P2P Deposit account
-    console.log("funding P2P Deposit - hash:🦊2🦊", hash2);
+      .then((hash) => {
+        console.log("funding P2P Deposit - hash:🦊🦊", hash);
+      })
+      .catch("🔥", console.error); // funding to P2P Deposit account
   } else {
     console.log("balance:🐝", await sdk.getAccountBalances()); // balance will fail on Etherspot network
   }
+  // test
+  const sender = await sdk.getAccount();
+  console.log("sender:", sender.address);
+  const outputSS = await sdk.batchDeployAccount();
+  console.log("-> gateway batch Sender", outputSS);
+
   /*
   balance:🐝 AccountBalances {
   items: [ AccountBalance { token: null, balance: [BigNumber] } ]
@@ -135,6 +80,7 @@ get account members AccountMembers {
 
   // add transaction to gateway batch
   // step 1 - batch native token for Tx
+  /*
   await sdk.batchExecuteAccountTransaction({
     to: RECEIVER,
     value: 100, // 100 wei
@@ -162,6 +108,7 @@ get account members AccountMembers {
       );
     });
 
+    */
   // step 4.1 you will see Sent if the whole batch is sent.
 
   if (batchHash !== "") {
