@@ -1,0 +1,22 @@
+{
+  "name": "node-main-loop",
+  "version": "1.0.0",
+  "main": "main.js",
+  "author": "Ming-der Wang",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "ethers": "^5.6.4",
+    "etherspot": "^1.30.0",
+    "reflect-metadata": "^0.1.13",
+    "request": "^2.88.2",
+    "rxjs": "^7.5.5",
+    "tsc": "^2.0.4"
+  },
+  "scripts": {
+    "start": "node main.js",
+    "test": "node https.js",
+    "req": "node req.js"
+  },
+  "type": "module"
+}
