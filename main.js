@@ -10,12 +10,13 @@ import {
 import "dotenv/config";
 let xx = "Wait 🙉";
 
-Env.defaultName = EnvNames.TestNets;
+Env.defaultName = EnvNames.TestNets; // change this one for MainNets or TestNets
 
 //const PRIVATE_KEY = randomPrivateKey(); //process.env.PRIVATE_KEY;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const KEY_NETWORK = NetworkNames.Ropsten;
+const KEY_NETWORK = NetworkNames.Etherspot; // change this for different network
 const RECEIVER = "0xE65B3A72e9d772Dd19719Dec92b1dE900fD178B0";
+
 async function main() {
   let batchHash = "";
   const sdk = new Sdk(PRIVATE_KEY, {
@@ -96,7 +97,9 @@ get account members AccountMembers {
   nextPage: null
 }
 */
-
+  // both need funding otherwise will reverted ********🍎🍎🍎🍎🍎🍎
+  // p2pPaymentDepositAddress:🍎 0x92fa3E98958aFDf230C5a5795B62E950439d7f78
+  // same contract account:🔥 0xEDb6fb28ae0eD17A3adc3283733391063e8D9fb6
   console.log(
     "p2pPaymentDepositAddress:🍎",
     sdk.state.state$._value.p2pPaymentDepositAddress
@@ -111,11 +114,12 @@ get account members AccountMembers {
   // step 0.1 - fundings contract address otherwise, tx will be reverted
   // only no Etherspot network
   if (KEY_NETWORK === NetworkNames.Etherspot) {
-    console.log("balance:🐝", await sdk.getAccountBalances()); // balance will fail on Etherspot network
     const hash = await sdk.topUpAccount(); // funding to new account
     console.log("funding - hash:🦊", hash);
     const hash2 = await sdk.topUpPaymentDepositAccount(); // funding to P2P Deposit account
     console.log("funding P2P Deposit - hash:🦊", hash2);
+  } else {
+    console.log("balance:🐝", await sdk.getAccountBalances()); // balance will fail on Etherspot network
   }
 
   // add transaction to gateway batch
