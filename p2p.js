@@ -29,17 +29,45 @@ const RECEIVER = "0xE65B3A72e9d772Dd19719Dec92b1dE900fD178B0";
 
 async function main() {
   const logDeposits = async () => {
-    console.log(
-      "🚄 getP2pPDeposits (receiver)",
-      await rcv.getP2PPaymentDeposits()
-    );
-    console.log(
-      "🚄 getP2pPDepositsi (sender)",
-      await sdk.getP2PPaymentDeposits()
-    );
     sdk.getP2PPaymentDeposits().then((x) => {
       console.log(
-        "-> 🚄 getP2pPDeposits.0.availableAmount",
+        "-> 🚄 (sender) getP2pPDeposits.0.availableAmount",
+        utils.formatUnits(x.items[0].availableAmount.toString(), 18)
+      );
+      console.log(
+        "lockedAmount",
+        utils.formatUnits(x.items[0].lockedAmount.toString(), 18)
+      );
+      console.log(
+        "pendingAmount",
+        utils.formatUnits(x.items[0].pendingAmount.toString(), 18)
+      );
+      if (x.items[0].latestWithdrawal) {
+        console.log(
+          "latestWithdrawal.value",
+          utils.formatUnits(x.items[0].latestWithdrawal.value.toString(), 18)
+        );
+        console.log(
+          "latestWithdrawal.totalAmount",
+          utils.formatUnits(
+            x.items[0].latestWithdrawal.totalAmount.toString(),
+            18
+          )
+        );
+      }
+      console.log(
+        "totalAmount",
+        utils.formatUnits(x.items[0].totalAmount.toString(), 18)
+      );
+      console.log(
+        "withdrawAmount",
+        utils.formatUnits(x.items[0].withdrawAmount.toString(), 18)
+      );
+    });
+    rcv.getP2PPaymentDeposits().then((x) => {
+      console.log("items size:", x.items.length);
+      console.log(
+        "-> 🚄 (reciver) getP2pPDeposits.0.availableAmount",
         utils.formatUnits(x.items[0].availableAmount.toString(), 18)
       );
       console.log(
@@ -86,13 +114,13 @@ async function main() {
 
   // step 0, init sdk and account
   sdk.notifications$.subscribe((notification) => {
-    //console.log("notification:🌈 sender:", notification);
+    console.log("notification:🌈 sender:", notification.type);
     if (notification.type === "P2PPaymentDepositUpdated") {
       logDeposits();
     }
   });
   rcv.notifications$.subscribe((notification) => {
-    //  console.log("notification:🌈 receiver:", notification);
+    console.log("notification:🌈🌈 receiver:", notification.type);
     if (notification.type === "P2PPaymentDepositUpdated") {
       logDeposits();
     }
@@ -104,12 +132,12 @@ async function main() {
   await sdk.computeContractAccount({
     sync: true,
   });
-  console.log("sender account:🎒", sdk.state.account);
+  console.log("sender account:🎒", sdk.state.account.address);
   await rcv.syncAccount();
   await rcv.computeContractAccount({
     sync: true,
   });
-  console.log("receiver account:🎒", rcv.state.account);
+  console.log("receiver account:🎒", rcv.state.account.address);
   // both need funding otherwise will reverted ********🍎🍎🍎🍎🍎🍎
   // p2pPaymentDepositAddress:🍎 0x92fa3E98958aFDf230C5a5795B62E950439d7f78
   // same contract account:🔥 0xEDb6fb28ae0eD17A3adc3283733391063e8D9fb6
@@ -168,10 +196,10 @@ async function main() {
       recipient: rcv.state.accountAddress,
       totalAmount: amountToSend,
     })
-    .catch("send fails:💥❌", console.error);
+    .catch("send fails:❌", console.error);
 
   // This is the hash we will use in the next step.
-  console.log("Hash:", output.hash);
+  console.log("updateP2PPaymentChannel - hash:💥", output.hash);
 
   /*
    * Remember to clear your batch and keep the house clean!
