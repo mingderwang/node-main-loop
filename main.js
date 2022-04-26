@@ -14,7 +14,7 @@ Env.defaultName = EnvNames.TestNets; // change this one for MainNets or TestNets
 
 //const PRIVATE_KEY = randomPrivateKey(); //process.env.PRIVATE_KEY;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const KEY_NETWORK = NetworkNames.Etherspot; // change this for different network
+const KEY_NETWORK = NetworkNames.Ropsten; // change this for different network, such as Ropsten
 const RECEIVER = "0xE65B3A72e9d772Dd19719Dec92b1dE900fD178B0";
 
 async function main() {
@@ -121,6 +121,11 @@ get account members AccountMembers {
   } else {
     console.log("balance:🐝", await sdk.getAccountBalances()); // balance will fail on Etherspot network
   }
+  /*
+  balance:🐝 AccountBalances {
+  items: [ AccountBalance { token: null, balance: [BigNumber] } ]
+}
+*/
 
   // add transaction to gateway batch
   // step 1 - batch native token for Tx
