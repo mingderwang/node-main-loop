@@ -232,7 +232,10 @@ async function main() {
    */
   await rcv.submitGatewayBatch();
 
-  logDeposits();
+  console.log("gas info", await sdk.getGatewayGasInfo());
+  const transactions = await sdk.getTransactions();
+
+  console.log("Transactions:🐝🐝🐝", transactions);
   /*
   balance:🐝 AccountBalances {
   items: [ AccountBalance { token: null, balance: [BigNumber] } ]
