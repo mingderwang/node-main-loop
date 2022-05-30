@@ -63,4 +63,6 @@ gas info GatewayGasInfo {
   instant: BigNumber { _hex: '0x0ba43b7400', _isBigNumber: true }
 }
 Transactions:🐝🐝🐝 Transactions { items: [] }
+✨  Done in 26.23s.
 ```
+
